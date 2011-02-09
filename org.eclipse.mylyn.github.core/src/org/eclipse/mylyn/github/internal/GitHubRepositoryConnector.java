@@ -125,13 +125,14 @@ public class GitHubRepositoryConnector extends AbstractRepositoryConnector {
 		try {
 			String user = GitHub.computeTaskRepositoryUser(repository.getUrl());
 			String project = GitHub.computeTaskRepositoryProject(repository.getUrl());
+			GitHubCredentials credentials = GitHub.computeTaskRepositoryCredentials(repository);
 			
 			// perform query
 			
 			for (String status: statuses) {
 				GitHubIssues issues = service.searchIssues(user,project,
 						status, query
-								.getAttribute("queryText"));
+								.getAttribute("queryText"),credentials);
 	
 				// collect task data
 				for (GitHubIssue issue : issues.getIssues()) {
@@ -158,9 +159,11 @@ public class GitHubRepositoryConnector extends AbstractRepositoryConnector {
 
 		String user = GitHub.computeTaskRepositoryUser(repository.getUrl());
 		String project = GitHub.computeTaskRepositoryProject(repository.getUrl());
+		GitHubCredentials credentials = GitHub.computeTaskRepositoryCredentials(repository);
 		
 		try {
-			GitHubIssue issue = service.showIssue(user, project, taskId);
+			
+			GitHubIssue issue = service.showIssue(user, project, taskId,credentials);
 			TaskData taskData = taskDataHandler.createTaskData(repository, monitor, user, project, issue);
 			
 			return taskData;

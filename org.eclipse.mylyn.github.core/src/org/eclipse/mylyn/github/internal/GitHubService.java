@@ -23,7 +23,6 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -135,19 +134,23 @@ public class GitHubService {
 	 * @note API Doc: /issues/search/:user/:repo/:state/:search_term
 	 */
 	public GitHubIssues searchIssues(final String user, final String repo,
-			final String state, final String searchTerm)
+			final String state, final String searchTerm, final GitHubCredentials credentials)
 			throws GitHubServiceException {
 		GitHubIssues issues = null;
-		GetMethod method = null;
+		PostMethod method = null;
 		try {
 			// build HTTP GET method
 			if (searchTerm.trim().length() == 0) { // no search term: list all
-				method = new GetMethod(gitURLBase + gitIssueRoot + LIST + user
+				method = new PostMethod(gitURLBase + gitIssueRoot + LIST + user
 						+ "/" + repo + "/" + state);
 			} else {
-				method = new GetMethod(gitURLBase + gitIssueRoot + SEARCH
+				method = new PostMethod(gitURLBase + gitIssueRoot + SEARCH
 						+ user + "/" + repo + "/" + state + "/" + searchTerm);
 			}
+			// Set the users login and API token
+			final NameValuePair login = new NameValuePair("login", credentials.getUsername());
+			final NameValuePair token = new NameValuePair("token", credentials.getApiToken());
+			method.setRequestBody(new NameValuePair[] { login, token });
 			// execute HTTP GET method
 			executeMethod(method);
 			// transform JSON to Java object
@@ -421,14 +424,19 @@ public class GitHubService {
 	}
 
 
-	public GitHubIssue showIssue(final String user, final String repo,final String issueNumber) throws GitHubServiceException {
-		GetMethod method = null;
+	public GitHubIssue showIssue(final String user, final String repo,final String issueNumber, final GitHubCredentials credentials) throws GitHubServiceException {
+		PostMethod method = null;
 		try {
-			// build HTTP GET method
-			method = new GetMethod(gitURLBase + gitIssueRoot + SHOW 
+			// build HTTP POST method
+			method = new PostMethod(gitURLBase + gitIssueRoot + SHOW 
             + user + "/" + repo + "/" + issueNumber);
 			
-			// execute HTTP GET method
+			// Set the users login and API token
+			final NameValuePair login = new NameValuePair("login", credentials.getUsername());
+			final NameValuePair token = new NameValuePair("token", credentials.getApiToken());
+			method.setRequestBody(new NameValuePair[] { login, token });
+
+			// execute HTTP POST method
 			executeMethod(method);
 			// transform JSON to Java object
 			GitHubShowIssue issue = gson.fromJson(new String(method.getResponseBody()),

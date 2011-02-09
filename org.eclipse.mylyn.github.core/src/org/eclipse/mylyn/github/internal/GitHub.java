@@ -7,6 +7,9 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
+import org.eclipse.mylyn.commons.net.AuthenticationType;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 public class GitHub {
 
@@ -74,7 +77,13 @@ public class GitHub {
 		}
 		return null;
 	}
+	
+	public static GitHubCredentials computeTaskRepositoryCredentials(TaskRepository repository){
+		 AuthenticationCredentials auth = repository.getCredentials(AuthenticationType.REPOSITORY);
+		return new GitHubCredentials(auth.getUserName(), auth.getPassword());
+	}
 
+	
 	/**
 	 * uses github.com
 	 * 
