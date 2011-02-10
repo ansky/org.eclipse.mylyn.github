@@ -1,6 +1,6 @@
 h2. Fork Specifics
 
-This is a fork of the "degree99 fork":https://github.com/dgreen99/org.eclipse.mylyn.github , that is a fork of "original connector":http://smilebase.github.com/org.eclipse.mylyn.github by smilebase.  
+This is a fork of the "devsprint fork":https://github.com/devsprint/org.eclipse.mylyn.github, which is a fork of the "degree99 fork":https://github.com/dgreen99/org.eclipse.mylyn.github , that is a fork of "original connector":http://smilebase.github.com/org.eclipse.mylyn.github by smilebase.  
 
 h2. Installation update site
 
